@@ -1,13 +1,12 @@
 <img width="2200" height="726" alt="Frame 7" src="https://github.com/user-attachments/assets/8ae65afd-d481-4afa-8505-6af99525234c" />
 
 # MuslimNoob - Aplikasi Pemandu Ibadah
+a free, clean, and simple muslim prayer reminder and guide
 
-a free, clean, and simple muslim prayer reminder and guide 
-
+![stars](https://img.shields.io/github/stars/itzfurizugg/MuslimNoob) ![forks](https://img.shields.io/github/forks/itzfurizugg/MuslimNoob) ![downloads](https://img.shields.io/github/downloads/itzfurizugg/MuslimNoob/total) ![flutter](https://img.shields.io/badge/flutter-enabled-02569B?logo=flutter&logoColor=white)
 ---
 
 ## Apa itu MuslimNoob?
-
 MuslimNoob adalah aplikasi mobile berbasis Flutter yang dirancang untuk membantu Muslim pemula dalam mempelajari dan menjalankan ibadah sehari-hari dengan lebih mudah dan terarah.
 Dengan MuslimNoob, pengguna dapat:
 
@@ -21,7 +20,6 @@ Dengan MuslimNoob, pengguna dapat:
 ---
 
 ## Fitur Utama
-
 ### 🕐 Jadwal Sholat
 - Jadwal sholat berdasarkan kota/wilayah
 - Data dari database Supabase (sumber: KEMENAG RI)
@@ -50,7 +48,6 @@ Dengan MuslimNoob, pengguna dapat:
 ---
 
 ## 🛠️ Tech Stack
- 
 | Layer | Teknologi |
 |-------|-----------|
 | **Mobile** | Flutter (Dart) |
@@ -64,7 +61,6 @@ Dengan MuslimNoob, pengguna dapat:
 ---
  
 ## 📂 Struktur Project
- 
 ```
 MuslimNoob/
 ├── lib/
@@ -98,7 +94,6 @@ MuslimNoob/
 ---
  
 ## 🗄️ Struktur Database
- 
 ```
 cities              — Data kota Indonesia
 jadwal_sholat       — Jadwal sholat per kota per tanggal
@@ -112,7 +107,6 @@ broadcasts          — Broadcast notifikasi (Supabase Realtime)
 ---
  
 ## 📦 Flutter Packages
- 
 ```yaml
 supabase_flutter: ^2.3.0
 shared_preferences: ^2.2.2
@@ -122,6 +116,3 @@ geocoding: ^3.0.0
 permission_handler: ^11.3.1
 vibration: ^2.0.0
 awesome_notifications: ^0.9.3+1
-```
- 
-
