@@ -67,7 +67,7 @@ class _DuaListScreenState extends State<DuaListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F0E8),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +77,7 @@ class _DuaListScreenState extends State<DuaListScreen> {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: _buildGlassButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.arrow_back_ios_new, size: 16),
@@ -92,8 +92,8 @@ class _DuaListScreenState extends State<DuaListScreen> {
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 4),
               child: Text(
                 widget.category.name,
-                style: const TextStyle(
-                  color: Color(0xFF0D4A4A),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                   fontSize: 26,
                 ),
@@ -107,24 +107,24 @@ class _DuaListScreenState extends State<DuaListScreen> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Cari doa atau artinya...',
-                  hintStyle: TextStyle(color: Colors.grey[500]),
-                  prefixIcon: const Icon(
+                  hintStyle: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey[400] : Colors.grey[500]),
+                  prefixIcon: Icon(
                     Icons.search,
-                    color: Color(0xFF1A6B6B),
+                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white70 : const Color(0xFF1A6B6B),
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide.none,
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: Theme.of(context).cardColor,
                   contentPadding: const EdgeInsets.symmetric(vertical: 16),
                 ),
               ),
             ),
             Expanded(
               child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? Center(child: CircularProgressIndicator())
                   : _errorMessage != null
                   ? _buildError()
                   : _buildContent(),
@@ -140,21 +140,21 @@ class _DuaListScreenState extends State<DuaListScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline, size: 64, color: Colors.grey),
-          const SizedBox(height: 16),
+          Icon(Icons.error_outline, size: 64, color: Colors.grey),
+          SizedBox(height: 16),
           Text(
             _errorMessage!,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.grey),
+            style: TextStyle(color: Colors.grey),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           ElevatedButton(
             onPressed: _loadDuas,
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF1A6B6B),
               foregroundColor: Colors.white,
             ),
-            child: const Text('Coba Lagi'),
+            child: Text('Coba Lagi'),
           ),
         ],
       ),
@@ -163,7 +163,7 @@ class _DuaListScreenState extends State<DuaListScreen> {
 
   Widget _buildContent() {
     if (_filteredDuas.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -183,7 +183,7 @@ class _DuaListScreenState extends State<DuaListScreen> {
       child: ListView.separated(
         padding: const EdgeInsets.all(16),
         itemCount: _filteredDuas.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 10),
+        separatorBuilder: (_, _) => SizedBox(height: 10),
         itemBuilder: (context, index) {
           final dua = _filteredDuas[index];
           return _buildDuaCard(dua, index + 1);
@@ -193,6 +193,9 @@ class _DuaListScreenState extends State<DuaListScreen> {
   }
 
   Widget _buildDuaCard(Dua dua, int number) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final finalIconColor = isDark ? Colors.white : const Color(0xFF1A6B6B);
+    
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
@@ -201,7 +204,7 @@ class _DuaListScreenState extends State<DuaListScreen> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
@@ -218,21 +221,21 @@ class _DuaListScreenState extends State<DuaListScreen> {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: const Color(0xFF1A6B6B).withOpacity(0.1),
+                color: finalIconColor.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: Text(
                   '$number',
-                  style: const TextStyle(
-                    color: Color(0xFF1A6B6B),
+                  style: TextStyle(
+                    color: finalIconColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 14),
+            SizedBox(width: 14),
 
             // Judul + preview arab
             Expanded(
@@ -241,19 +244,19 @@ class _DuaListScreenState extends State<DuaListScreen> {
                 children: [
                   Text(
                     dua.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF0D4A4A),
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Text(
                     dua.arabicText,
                     textAlign: TextAlign.right,
                     style: TextStyle(
                       fontSize: 13,
-                      color: Colors.grey[600],
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
                       fontFamily: 'serif',
                     ),
                     maxLines: 1,
@@ -263,7 +266,7 @@ class _DuaListScreenState extends State<DuaListScreen> {
               ),
             ),
 
-            const Icon(Icons.chevron_right, color: Colors.grey, size: 20),
+            Icon(Icons.chevron_right, color: isDark ? Colors.grey[500] : Colors.grey, size: 20),
           ],
         ),
       ),
@@ -305,13 +308,13 @@ class _DuaListScreenState extends State<DuaListScreen> {
               ],
             ),
             child: DefaultTextStyle(
-              style: const TextStyle(
-                color: Color(0xFF0D4A4A),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
               ),
               child: IconTheme(
-                data: const IconThemeData(color: Color(0xFF0D4A4A), size: 16),
+                data: IconThemeData(color: Theme.of(context).colorScheme.onSurface, size: 16),
                 child: child,
               ),
             ),

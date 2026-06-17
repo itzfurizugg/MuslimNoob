@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/dua_service.dart';
 import 'dua_list_screen.dart';
-import '../tutorial/tutorial_list_screen.dart';
-import '../tutorial/panduan_sholat_screen.dart';
+
 
 class DuaCategoryScreen extends StatefulWidget {
   const DuaCategoryScreen({super.key});
@@ -47,30 +46,13 @@ class _DuaCategoryScreenState extends State<DuaCategoryScreen> {
     }
   }
 
-  void _navigateToCategory(String title, List<String> matchSlugs) {
-    if (_allCategories.isEmpty) return;
-
-    // Filter kategori berdasarkan slug yang cocok atau tampilkan semua
-    final targetCategory = _allCategories.firstWhere(
-      (c) => matchSlugs.contains(c.slug),
-      orElse: () => _allCategories.first, // Fallback
-    );
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => DuaListScreen(category: targetCategory),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F0E8),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? Center(child: CircularProgressIndicator())
             : _errorMessage != null
             ? _buildError()
             : _buildContent(),
@@ -83,13 +65,13 @@ class _DuaCategoryScreenState extends State<DuaCategoryScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline, size: 64, color: Colors.red),
-          const SizedBox(height: 16),
+          Icon(Icons.error_outline, size: 64, color: Colors.red),
+          SizedBox(height: 16),
           Text(_errorMessage!, textAlign: TextAlign.center),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           ElevatedButton(
             onPressed: _loadCategories,
-            child: const Text('Coba Lagi'),
+            child: Text('Coba Lagi'),
           ),
         ],
       ),
@@ -106,52 +88,36 @@ class _DuaCategoryScreenState extends State<DuaCategoryScreen> {
             'Doa & Dzikir',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.w700,
-              color: const Color(0xFF0D4A4A),
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
 
-          _buildListItem(
-            title: 'Doa Harian',
-            subtitle: 'Kumpulan doa untuk aktivitas sehari-hari',
-            icon: Icons.volunteer_activism_rounded,
-            color: const Color(0xFF1A6B6B),
-            onTap: () => _navigateToCategory('Doa Harian', ['doa-harian']),
-          ),
-          _buildListItem(
-            title: 'Dzikir',
-            subtitle: 'Dzikir pagi dan petang sesuai sunnah',
-            icon: Icons.spa_rounded,
-            color: const Color(0xFFE89813),
-            onTap: () => _navigateToCategory('Dzikir', ['dzikir']),
-          ),
-          _buildListItem(
-            title: 'Lainnya',
-            subtitle: 'Doa-doa lainnya',
-            icon: Icons.auto_stories_rounded,
-            color: const Color(0xFFC48C36),
-            onTap: () => _navigateToCategory('Lainnya', ['lainnya']),
-          ),
-          _buildListItem(
-            title: 'Panduan Sholat',
-            subtitle: 'Langkah-langkah dan bacaan gerakan sholat',
-            icon: Icons.mosque_rounded,
-            color: const Color(0xFF4A8989),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const PanduanSholatScreen()),
-            ),
-          ),
-          _buildListItem(
-            title: 'Tata Cara',
-            subtitle: 'Tutorial bersuci, wudhu, dan lainnya',
-            icon: Icons.menu_book_rounded,
-            color: const Color(0xFF9E8A2E), // Warna variasi
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const TutorialListScreen()),
-            ),
-          ),
+          ..._allCategories.map((category) {
+            final colors = [
+              const Color(0xFF1A6B6B),
+              const Color(0xFFE89813),
+              const Color(0xFFC48C36),
+              const Color(0xFF4A8B8B),
+              const Color(0xFFB06F0B),
+            ];
+            final color = colors[category.id % colors.length];
+            
+            return _buildListItem(
+              title: category.name,
+              subtitle: 'Kumpulan ${category.name.toLowerCase()}',
+              icon: Icons.auto_stories_rounded,
+              color: color,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => DuaListScreen(category: category),
+                  ),
+                );
+              },
+            );
+          }),
         ],
       ),
     );
@@ -164,13 +130,16 @@ class _DuaCategoryScreenState extends State<DuaCategoryScreen> {
     required Color color,
     required VoidCallback onTap,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final finalIconColor = isDark && color == const Color(0xFF1A6B6B) ? Colors.white : color;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
@@ -185,12 +154,12 @@ class _DuaCategoryScreenState extends State<DuaCategoryScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.15),
+                color: finalIconColor.withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: color, size: 28),
+              child: Icon(icon, color: finalIconColor, size: 28),
             ),
-            const SizedBox(width: 20),
+            SizedBox(width: 20),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,21 +168,21 @@ class _DuaCategoryScreenState extends State<DuaCategoryScreen> {
                     title,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF0D4A4A),
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontSize: 18,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                    style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600], fontSize: 13),
                   ),
                 ],
               ),
             ),
             Icon(
               Icons.arrow_forward_ios_rounded,
-              color: Colors.grey[300],
+              color: isDark ? Colors.grey[600] : Colors.grey[300],
               size: 18,
             ),
           ],

@@ -7,6 +7,7 @@ import 'prayer_schedule_screen.dart';
 import 'qibla_screen.dart';
 import 'profile.dart';
 import 'dua/dua_category_screen.dart';
+import 'quran/quran_screen.dart'; // <-- added import
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -59,8 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        backgroundColor: Color(0xFFF5F0E8),
+      return Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Center(
           child: CircularProgressIndicator(color: Color(0xFF1A6B6B)),
         ),
@@ -72,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Widget> tabs = [
       PrayerScheduleScreen(city: _selectedCity!, isTab: true),
       QiblaScreen(isVisible: _currentIndex == 1),
+      const QuranScreen(), // <-- added
       const DuaCategoryScreen(),
       const ProfileScreen(),
     ];
@@ -127,19 +129,23 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize
-                .min, // Navbar berbentuk pill yang menyesuaikan lebar anak-anaknya
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildNavItem(0, Icons.home_rounded, 'Beranda'),
-              const SizedBox(width: 4),
-              _buildNavItem(1, Icons.explore_rounded, 'Kiblat'),
-              const SizedBox(width: 4),
-              _buildNavItem(2, Icons.book_rounded, 'Doa'),
-              const SizedBox(width: 4),
-              _buildNavItem(3, Icons.person_rounded, 'Profil'),
-            ],
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal, // To avoid overflow on small screens
+            child: Row(
+              mainAxisSize: MainAxisSize.min, // Navbar berbentuk pill yang menyesuaikan lebar anak-anaknya
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildNavItem(0, Icons.home_rounded, 'Beranda'),
+                SizedBox(width: 4),
+                _buildNavItem(1, Icons.explore_rounded, 'Kiblat'),
+                SizedBox(width: 4),
+                _buildNavItem(2, Icons.menu_book_rounded, 'Quran'), // <-- added
+                SizedBox(width: 4),
+                _buildNavItem(3, Icons.auto_stories_rounded, 'Doa'),
+                SizedBox(width: 4),
+                _buildNavItem(4, Icons.person_rounded, 'Profil'),
+              ],
+            ),
           ),
         ),
       ),
@@ -148,7 +154,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildNavItem(int index, IconData icon, String label) {
     final isSelected = _currentIndex == index;
-    final primaryColor = const Color(0xFF1A6B6B);
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
     final selectedBgColor = primaryColor;
 
     return GestureDetector(
@@ -174,16 +181,16 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(
               icon,
-              color: isSelected ? Colors.white : primaryColor.withOpacity(0.5),
+              color: isSelected ? (theme.brightness == Brightness.dark ? Colors.white : Colors.white) : primaryColor.withOpacity(0.5),
               size: 24,
             ),
             if (isSelected) ...[
-              const SizedBox(width: 6),
+              SizedBox(width: 6),
               Flexible(
                 child: Text(
                   label,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,

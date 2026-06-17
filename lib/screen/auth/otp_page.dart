@@ -41,8 +41,12 @@ class _OtpPageState extends State<OtpPage> {
 
   @override
   void dispose() {
-    for (final c in _controllers) c.dispose();
-    for (final f in _focusNodes) f.dispose();
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    for (final f in _focusNodes) {
+      f.dispose();
+    }
     _timer?.cancel();
     super.dispose();
   }
@@ -88,7 +92,9 @@ class _OtpPageState extends State<OtpPage> {
     } on AuthException catch (e) {
       _showError(_translateError(e.message));
       // Clear kotak OTP kalau salah
-      for (final c in _controllers) c.clear();
+      for (final c in _controllers) {
+        c.clear();
+      }
       _focusNodes[0].requestFocus();
     } catch (e) {
       _showError('Terjadi kesalahan. Coba lagi.');
@@ -113,7 +119,9 @@ class _OtpPageState extends State<OtpPage> {
       _startCountdown();
 
       // Clear kotak OTP
-      for (final c in _controllers) c.clear();
+      for (final c in _controllers) {
+        c.clear();
+      }
       _focusNodes[0].requestFocus();
     } on AuthException catch (e) {
       _showError(_translateError(e.message));
@@ -154,8 +162,8 @@ class _OtpPageState extends State<OtpPage> {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle, color: Colors.white),
-            const SizedBox(width: 10),
+            Icon(Icons.check_circle, color: Colors.white),
+            SizedBox(width: 10),
             Expanded(child: Text(message)),
           ],
         ),
@@ -231,13 +239,13 @@ class _OtpPageState extends State<OtpPage> {
               ],
             ),
             child: DefaultTextStyle(
-              style: const TextStyle(
-                color: Color(0xFF0D4A4A),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
               ),
               child: IconTheme(
-                data: const IconThemeData(color: Color(0xFF0D4A4A), size: 16),
+                data: IconThemeData(color: Theme.of(context).colorScheme.onSurface, size: 16),
                 child: child,
               ),
             ),
@@ -275,10 +283,10 @@ class _OtpPageState extends State<OtpPage> {
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(1),
           ],
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF0D4A4A),
+            color: Theme.of(context).colorScheme.onSurface,
           ),
           decoration: InputDecoration(
             filled: true,
@@ -316,7 +324,7 @@ class _OtpPageState extends State<OtpPage> {
     final allFilled = _otpCode.length == 6;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F0E8),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -327,7 +335,7 @@ class _OtpPageState extends State<OtpPage> {
                 children: [
                   _buildGlassButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.arrow_back_ios_new, size: 16),
@@ -353,7 +361,7 @@ class _OtpPageState extends State<OtpPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14),
 
                     // Ikon email
                     Container(
@@ -363,45 +371,45 @@ class _OtpPageState extends State<OtpPage> {
                         color: const Color(0xFF1A6B6B).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.mark_email_unread_outlined,
                         color: Color(0xFF1A6B6B),
                         size: 36,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
 
-                    const Text(
+                    Text(
                       'Verifikasi Email',
                       style: TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF0D4A4A),
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10),
 
                     Text(
                       'Kami mengirimkan kode OTP 6 digit ke',
                       style: TextStyle(color: Colors.grey[600], fontSize: 14),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4),
                     Text(
                       widget.email,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Color(0xFF1A6B6B),
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 36),
+                    SizedBox(height: 36),
 
                     // 6 kotak OTP
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(6, _buildOtpBox),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
 
                     // Hint paste
                     Center(
@@ -410,7 +418,7 @@ class _OtpPageState extends State<OtpPage> {
                         style: TextStyle(color: Colors.grey[500], fontSize: 12),
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32),
 
                     // Tombol verifikasi
                     SizedBox(
@@ -429,7 +437,7 @@ class _OtpPageState extends State<OtpPage> {
                           elevation: 0,
                         ),
                         child: _isVerifying
-                            ? const SizedBox(
+                            ? SizedBox(
                                 width: 22,
                                 height: 22,
                                 child: CircularProgressIndicator(
@@ -437,7 +445,7 @@ class _OtpPageState extends State<OtpPage> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : const Text(
+                            : Text(
                                 'Verifikasi',
                                 style: TextStyle(
                                   fontSize: 16,
@@ -447,12 +455,12 @@ class _OtpPageState extends State<OtpPage> {
                               ),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24),
 
                     // Kirim ulang OTP
                     Center(
                       child: _isResending
-                          ? const SizedBox(
+                          ? SizedBox(
                               width: 20,
                               height: 20,
                               child: CircularProgressIndicator(
@@ -486,7 +494,7 @@ class _OtpPageState extends State<OtpPage> {
                               ),
                             ),
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40),
                   ],
                 ),
               ),

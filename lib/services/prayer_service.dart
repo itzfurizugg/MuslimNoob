@@ -1,4 +1,5 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class City {
   final int id;
@@ -7,16 +8,16 @@ class City {
   final String timezone;
 
   City({
-    required this.id,
+    this.id = 0,
     required this.name,
     required this.province,
     required this.timezone,
   });
 
   factory City.fromJson(Map<String, dynamic> json) => City(
-    id: json['id'],
-    name: json['name'],
-    province: json['province'],
+    id: json['id'] ?? 0,
+    name: json['name'] ?? json['kabkota'] ?? '',
+    province: json['province'] ?? json['provinsi'] ?? '',
     timezone: json['timezone'] ?? 'Asia/Jakarta',
   );
 }
@@ -33,8 +34,8 @@ class PrayerSchedule {
   final String isya;
 
   PrayerSchedule({
-    required this.id,
-    required this.kotaId,
+    this.id = 0,
+    this.kotaId = 0,
     required this.tanggal,
     required this.subuh,
     this.terbit,
@@ -45,11 +46,11 @@ class PrayerSchedule {
   });
 
   factory PrayerSchedule.fromJson(Map<String, dynamic> json) => PrayerSchedule(
-    id: json['id'],
-    kotaId: json['kota_id'],
-    tanggal: DateTime.parse(json['date']),
+    id: 0,
+    kotaId: 0,
+    tanggal: DateTime.parse(json['tanggal_lengkap'] ?? json['date']),
     subuh: json['subuh'],
-    terbit: json['terbit'],
+    terbit: json['terbit'] ?? json['dhuha'], // Use dhuha as terbit fallback or keep as is.
     dzuhur: json['dzuhur'],
     ashar: json['ashar'],
     maghrib: json['maghrib'],
@@ -58,55 +59,93 @@ class PrayerSchedule {
 }
 
 class PrayerService {
-  final _supabase = Supabase.instance.client;
+  static const String _baseUrl = 'https://equran.id/api/v2/shalat';
 
-  /// Ambil semua kota, diurutkan berdasarkan nama
+  /// Ambil daftar provinsi
+  Future<List<String>> getProvinces() async {
+    final response = await http.get(Uri.parse('$_baseUrl/provinsi'));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return List<String>.from(data['data']);
+    }
+    throw Exception('Gagal mengambil daftar provinsi');
+  }
+
+  /// Ambil daftar kota berdasarkan provinsi
+  Future<List<City>> getCitiesByProvince(String province) async {
+    final response = await http.post(
+      Uri.parse('$_baseUrl/kabkota'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'provinsi': province}),
+    );
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final List<String> cities = List<String>.from(data['data']);
+      return cities
+          .map((c) => City(name: c, province: province, timezone: 'Asia/Jakarta'))
+          .toList();
+    }
+    throw Exception('Gagal mengambil daftar kota');
+  }
+
+  /// Ambil semua kota (Deprecated, since we fetch by province now)
   Future<List<City>> getCities() async {
-    final response = await _supabase
-        .from('cities')
-        .select()
-        .order('id', ascending: true);
-
-    return (response as List).map((e) => City.fromJson(e)).toList();
+    return [];
   }
 
   /// Ambil jadwal sholat berdasarkan kota dan tanggal tertentu
   Future<PrayerSchedule?> getScheduleByDate({
-    required int kotaId,
+    required City city,
     required DateTime date,
   }) async {
-    final tanggal = date.toIso8601String().substring(0, 10); // YYYY-MM-DD
+    final response = await http.post(
+      Uri.parse(_baseUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'provinsi': city.province,
+        'kabkota': city.name,
+        'bulan': date.month,
+        'tahun': date.year,
+      }),
+    );
 
-    final response = await _supabase
-        .from('prayer_schedules')
-        .select()
-        .eq('kota_id', kotaId)
-        .eq('date', tanggal)
-        .maybeSingle();
-
-    if (response == null) return null;
-    return PrayerSchedule.fromJson(response);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final List jadwalList = data['data']['jadwal'];
+      
+      final String targetDateStr = date.toIso8601String().substring(0, 10);
+      
+      for (var item in jadwalList) {
+        if (item['tanggal_lengkap'] == targetDateStr) {
+          return PrayerSchedule.fromJson(item);
+        }
+      }
+    }
+    return null;
   }
 
   /// Ambil jadwal sholat 1 bulan penuh
   Future<List<PrayerSchedule>> getScheduleByMonth({
-    required int kotaId,
+    required City city,
     required int month,
     required int year,
   }) async {
-    final from = '$year-${month.toString().padLeft(2, '0')}-01';
-    final lastDay = DateTime(year, month + 1, 0).day;
-    final to =
-        '$year-${month.toString().padLeft(2, '0')}-${lastDay.toString().padLeft(2, '0')}';
+    final response = await http.post(
+      Uri.parse(_baseUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'provinsi': city.province,
+        'kabkota': city.name,
+        'bulan': month,
+        'tahun': year,
+      }),
+    );
 
-    final response = await _supabase
-        .from('prayer_schedules')
-        .select()
-        .eq('kota_id', kotaId)
-        .gte('date', from)
-        .lte('date', to)
-        .order('date', ascending: true);
-
-    return (response as List).map((e) => PrayerSchedule.fromJson(e)).toList();
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final List jadwalList = data['data']['jadwal'];
+      return jadwalList.map((e) => PrayerSchedule.fromJson(e)).toList();
+    }
+    return [];
   }
 }

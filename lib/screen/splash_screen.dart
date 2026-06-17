@@ -78,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen>
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(color: Color(0xFF003231)),
+        decoration: BoxDecoration(color: Color(0xFF003231)),
         child: Center(
           child: FadeTransition(
             opacity: _fadeAnim,
@@ -92,13 +92,13 @@ class _SplashScreenState extends State<SplashScreen>
                     width: 450,
                     height: 650,
                     fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) => const Icon(
+                    errorBuilder: (context, error, stackTrace) => Icon(
                       Icons.cruelty_free_outlined,
                       size: 120,
                       color: Color(0xFFF5F0DC),
                     ),
                   ),
-                  const SizedBox(height: 28),
+                  SizedBox(height: 28),
                   SizedBox(
                     width: 36,
                     height: 36,

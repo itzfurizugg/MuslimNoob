@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'services/prayer_notif_service.dart';
@@ -9,6 +8,9 @@ import 'screen/auth/register.dart';
 import 'screen/home.dart';
 import 'screen/city_picker_screen.dart';
 import 'screen/dua/dua_category_screen.dart';
+
+import 'services/theme_service.dart';
+import 'theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +25,9 @@ Future<void> main() async {
 
   // Inisialisasi notification plugin & minta izin
   await PrayerNotifService().init();
+  
+  // Inisialisasi Theme Service
+  await ThemeService().init();
 
   runApp(const MyApp());
 }
@@ -32,33 +37,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final base = GoogleFonts.dmSansTextTheme();
-    return MaterialApp(
-      title: 'MuslimNoob',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFFF5F0E8),
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1A6B6B)),
-        useMaterial3: true,
-        textTheme: base.copyWith(
-          displayLarge: GoogleFonts.poppins(textStyle: base.displayLarge),
-          displayMedium: GoogleFonts.poppins(textStyle: base.displayMedium),
-          displaySmall: GoogleFonts.poppins(textStyle: base.displaySmall),
-          headlineLarge: GoogleFonts.poppins(textStyle: base.headlineLarge),
-          headlineMedium: GoogleFonts.poppins(textStyle: base.headlineMedium),
-          headlineSmall: GoogleFonts.poppins(textStyle: base.headlineSmall),
-          titleLarge: GoogleFonts.poppins(textStyle: base.titleLarge),
-          titleMedium: GoogleFonts.poppins(textStyle: base.titleMedium),
-        ),
-      ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const SplashScreen(),
-        '/login': (context) => const LoginPage(),
-        '/register': (context) => const RegisterPage(),
-        '/home': (context) => const HomeScreen(),
-        '/city-picker': (context) => const CityPickerScreen(),
-        '/dua': (context) => const DuaCategoryScreen(),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: ThemeService().themeModeNotifier,
+      builder: (context, mode, child) {
+        return MaterialApp(
+          title: 'MuslimNoob',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: mode,
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const SplashScreen(),
+            '/login': (context) => const LoginPage(),
+            '/register': (context) => const RegisterPage(),
+            '/home': (context) => const HomeScreen(),
+            '/city-picker': (context) => const CityPickerScreen(),
+            '/dua': (context) => const DuaCategoryScreen(),
+          },
+        );
       },
     );
   }

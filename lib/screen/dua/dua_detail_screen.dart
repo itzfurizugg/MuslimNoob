@@ -12,7 +12,7 @@ class DuaDetailScreen extends StatelessWidget {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Row(
+        content: Row(
           children: [
             Icon(Icons.check_circle, color: Colors.white, size: 18),
             SizedBox(width: 8),
@@ -27,7 +27,8 @@ class DuaDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildGlassButton({
+  Widget _buildGlassButton(
+    BuildContext context, {
     required VoidCallback onPressed,
     required Widget child,
   }) {
@@ -62,13 +63,13 @@ class DuaDetailScreen extends StatelessWidget {
               ],
             ),
             child: DefaultTextStyle(
-              style: const TextStyle(
-                color: Color(0xFF0D4A4A),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
                 fontSize: 15,
                 fontWeight: FontWeight.w500,
               ),
               child: IconTheme(
-                data: const IconThemeData(color: Color(0xFF0D4A4A), size: 16),
+                data: IconThemeData(color: Theme.of(context).colorScheme.onSurface, size: 16),
                 child: child,
               ),
             ),
@@ -81,7 +82,7 @@ class DuaDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F0E8),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,8 +94,9 @@ class DuaDetailScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildGlassButton(
+                    context,
                     onPressed: () => Navigator.pop(context),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.arrow_back_ios_new, size: 16),
@@ -104,12 +106,13 @@ class DuaDetailScreen extends StatelessWidget {
                     ),
                   ),
                   _buildGlassButton(
+                    context,
                     onPressed: () {
                       final text =
                           '${dua.arabicText}\n\n${dua.transliteration}\n\n${dua.translation}';
                       _copyToClipboard(context, text);
                     },
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.copy_all_rounded, size: 18),
@@ -127,8 +130,8 @@ class DuaDetailScreen extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
               child: Text(
                 dua.title,
-                style: const TextStyle(
-                  color: Color(0xFF0D4A4A),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                   fontSize: 26,
                   height: 1.3,
@@ -145,13 +148,14 @@ class DuaDetailScreen extends StatelessWidget {
                   children: [
                     // Teks Arab
                     _buildSection(
+                      context,
                       label: 'Arab',
                       icon: Icons.translate,
                       child: Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(14),
                           boxShadow: [
                             BoxShadow(
@@ -164,56 +168,62 @@ class DuaDetailScreen extends StatelessWidget {
                           dua.arabicText,
                           textAlign: TextAlign.right,
                           textDirection: TextDirection.rtl,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 26,
                             height: 2.2,
-                            color: Color(0xFF0D4A4A),
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontFamily: 'serif',
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
 
                     // Latin / Transliterasi
                     _buildSection(
+                      context,
                       label: 'Latin',
                       icon: Icons.format_quote,
                       child: _buildTextCard(
+                        context,
                         text: dua.transliteration,
-                        color: const Color(0xFF0D4A4A),
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 15,
                         fontStyle: FontStyle.italic,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12),
 
                     // Terjemahan
                     _buildSection(
+                      context,
                       label: 'Artinya',
                       icon: Icons.menu_book_outlined,
                       child: _buildTextCard(
+                        context,
                         text: '"${dua.translation}"',
-                        color: Colors.grey[800]!,
+                        color: Theme.of(context).brightness == Brightness.dark ? Colors.grey[300]! : Colors.grey[800]!,
                         fontSize: 15,
                       ),
                     ),
 
                     // Sumber (kalau ada)
                     if (dua.source != null && dua.source!.isNotEmpty) ...[
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12),
                       _buildSection(
+                        context,
                         label: 'Sumber',
                         icon: Icons.info_outline,
                         child: _buildTextCard(
+                          context,
                           text: dua.source!,
-                          color: Colors.grey[600]!,
+                          color: Theme.of(context).brightness == Brightness.dark ? Colors.grey[400]! : Colors.grey[600]!,
                           fontSize: 13,
                         ),
                       ),
                     ],
 
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24),
                   ],
                 ),
               ),
@@ -224,35 +234,39 @@ class DuaDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSection({
+  Widget _buildSection(
+    BuildContext context, {
     required String label,
     required IconData icon,
     required Widget child,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final color = isDark ? Colors.white70 : const Color(0xFF1A6B6B);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(icon, size: 16, color: const Color(0xFF1A6B6B)),
-            const SizedBox(width: 6),
+            Icon(icon, size: 16, color: color),
+            SizedBox(width: 6),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1A6B6B),
+                color: color,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
         child,
       ],
     );
   }
 
-  Widget _buildTextCard({
+  Widget _buildTextCard(
+    BuildContext context, {
     required String text,
     required Color color,
     required double fontSize,
@@ -262,7 +276,7 @@ class DuaDetailScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8),

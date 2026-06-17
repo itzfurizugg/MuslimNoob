@@ -181,10 +181,10 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F0E8),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? Center(child: CircularProgressIndicator())
             : _errorMessage != null
             ? _buildError()
             : _buildContent(),
@@ -199,14 +199,14 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.location_off, size: 80, color: Colors.grey),
-            const SizedBox(height: 16),
+            Icon(Icons.location_off, size: 80, color: Colors.grey),
+            SizedBox(height: 16),
             Text(
               _errorMessage!,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16, color: Colors.grey),
+              style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: () {
                 setState(() {
@@ -215,8 +215,8 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
                 });
                 _init();
               },
-              icon: const Icon(Icons.refresh),
-              label: const Text('Coba Lagi'),
+              icon: Icon(Icons.refresh),
+              label: Text('Coba Lagi'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF1A6B6B),
                 foregroundColor: Colors.white,
@@ -239,21 +239,21 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 2),
+          SizedBox(height: 2),
           Text(
             'Arah Kiblat',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.w700,
-              color: const Color(0xFF0D4A4A),
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
           _buildArahKiblatCard(),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           _buildKompasLingkaran(),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           _buildDerajatCard(),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           _buildPeringatan(),
         ],
       ),
@@ -261,11 +261,12 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildDerajatCard() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -289,18 +290,18 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
                       children: [
                         TextSpan(
                           text: _compassHeading.toStringAsFixed(1),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 48,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF1A6B6B),
+                            color: isDark ? Colors.white : const Color(0xFF1A6B6B),
                           ),
                         ),
-                        const TextSpan(
+                        TextSpan(
                           text: '°',
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF1A6B6B),
+                            color: isDark ? Colors.white : const Color(0xFF1A6B6B),
                           ),
                         ),
                       ],
@@ -308,23 +309,23 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
                   ),
                   Text(
                     'Menghadap ${_getCompassDirection(_compassHeading)}',
-                    style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                    style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600], fontSize: 13),
                   ),
                 ],
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Row(
             children: [
-              const Icon(Icons.location_on, color: Color(0xFF1A6B6B), size: 16),
-              const SizedBox(width: 6),
+              Icon(Icons.location_on, color: isDark ? Colors.white70 : const Color(0xFF1A6B6B), size: 16),
+              SizedBox(width: 6),
               Expanded(
                 child: Text(
                   _locationName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF1A6B6B),
+                    color: isDark ? Colors.white : const Color(0xFF1A6B6B),
                     fontWeight: FontWeight.w500,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -338,11 +339,12 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildKompasLingkaran() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -359,23 +361,23 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1A6B6B).withOpacity(0.1),
+                  color: isDark ? Colors.white12 : const Color(0xFF1A6B6B).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.explore,
-                  color: Color(0xFF1A6B6B),
+                  color: isDark ? Colors.white : const Color(0xFF1A6B6B),
                   size: 18,
                 ),
               ),
-              const SizedBox(width: 10),
-              const Text(
+              SizedBox(width: 10),
+              Text(
                 'Kompas Kiblat',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Theme.of(context).colorScheme.onSurface),
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
           SizedBox(
             width: 280,
             height: 280,
@@ -387,7 +389,7 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
                   height: 260,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white,
+                    color: isDark ? const Color(0xFF1E3333) : Colors.white,
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.1),
@@ -410,7 +412,7 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? const Color(0xFF2E4F4F) : Colors.white,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
@@ -436,7 +438,7 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
                         ),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.mosque,
                         color: Colors.white,
                         size: 20,
@@ -453,12 +455,13 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildArahKiblatCard() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: _isPointingQibla ? Colors.green.shade800 : Colors.white,
+        color: _isPointingQibla ? Colors.green.shade800 : Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -476,16 +479,16 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
             decoration: BoxDecoration(
               color: _isPointingQibla
                   ? Colors.white.withOpacity(0.2)
-                  : const Color(0xFF1A6B6B).withOpacity(0.1),
+                  : (isDark ? Colors.white12 : const Color(0xFF1A6B6B).withOpacity(0.1)),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               Icons.mosque,
-              color: _isPointingQibla ? Colors.white : const Color(0xFF1A6B6B),
+              color: _isPointingQibla ? Colors.white : (isDark ? Colors.white : const Color(0xFF1A6B6B)),
               size: 30,
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -498,11 +501,11 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
                     fontWeight: FontWeight.bold,
                     color: _isPointingQibla
                         ? Colors.white
-                        : const Color(0xFF0D4A4A),
+                        : Theme.of(context).colorScheme.onSurface,
                     height: 1.1,
                   ),
                 ),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 Text(
                   _isPointingQibla
                       ? 'Anda telah menghadap ke kiblat!'
@@ -511,7 +514,7 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
                     fontSize: 13,
                     color: _isPointingQibla
                         ? Colors.white.withOpacity(0.9)
-                        : Colors.grey[600],
+                        : (isDark ? Colors.grey[400] : Colors.grey[600]),
                   ),
                 ),
               ],
@@ -527,14 +530,14 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
                   fontWeight: FontWeight.bold,
                   color: _isPointingQibla
                       ? Colors.white
-                      : const Color(0xFF1A6B6B),
+                      : (isDark ? Colors.white : const Color(0xFF1A6B6B)),
                 ),
               ),
               Text(
                 'dari Utara',
                 style: TextStyle(
                   fontSize: 11,
-                  color: _isPointingQibla ? Colors.white70 : Colors.grey[500],
+                  color: _isPointingQibla ? Colors.white70 : (isDark ? Colors.grey[400] : Colors.grey[500]),
                 ),
               ),
             ],
@@ -545,32 +548,33 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildPeringatan() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.amber[50],
+        color: isDark ? Colors.amber.withOpacity(0.1) : Colors.amber.shade100,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.amber.shade200, width: 1.5),
+        border: Border.all(color: isDark ? Colors.amber.withOpacity(0.3) : Colors.amber.shade300, width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.warning_amber_rounded, color: Colors.amber, size: 18),
+              Icon(Icons.warning_amber_rounded, color: isDark ? Colors.amber.shade300 : Colors.amber.shade800, size: 18),
               SizedBox(width: 6),
               Text(
                 'Perhatian',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 13,
-                  color: Colors.brown,
+                  color: isDark ? Colors.amber.shade200 : Colors.brown.shade800,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           ...[
             '📱 Jauhkan HP dari benda logam atau magnet.',
             '🔄 Jika kompas tidak akurat, gerakkan HP membentuk angka 8.',
@@ -581,7 +585,7 @@ class _QiblaScreenState extends State<QiblaScreen> with WidgetsBindingObserver {
               padding: const EdgeInsets.only(bottom: 4),
               child: Text(
                 tip,
-                style: const TextStyle(fontSize: 12, color: Colors.brown),
+                style: TextStyle(fontSize: 12, color: isDark ? Colors.amber.shade100 : Colors.brown.shade800),
               ),
             ),
           ),
@@ -596,20 +600,21 @@ class _CompassLabels extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return SizedBox(
       width: 260,
       height: 260,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          _label('U', 0, -100, cardinal: true, isNorth: true),
-          _label('T', 100, 0, cardinal: true),
-          _label('S', 0, 100, cardinal: true),
-          _label('B', -100, 0, cardinal: true),
-          _label('TL', 70, -70),
-          _label('TG', 70, 70),
-          _label('BD', -70, 70),
-          _label('BL', -70, -70),
+          _label('U', 0, -100, isDark, cardinal: true, isNorth: true),
+          _label('T', 100, 0, isDark, cardinal: true),
+          _label('S', 0, 100, isDark, cardinal: true),
+          _label('B', -100, 0, isDark, cardinal: true),
+          _label('TL', 70, -70, isDark),
+          _label('TG', 70, 70, isDark),
+          _label('BD', -70, 70, isDark),
+          _label('BL', -70, -70, isDark),
         ],
       ),
     );
@@ -618,7 +623,8 @@ class _CompassLabels extends StatelessWidget {
   Widget _label(
     String text,
     double dx,
-    double dy, {
+    double dy,
+    bool isDark, {
     bool cardinal = false,
     bool isNorth = false,
   }) {
@@ -631,7 +637,7 @@ class _CompassLabels extends StatelessWidget {
           fontWeight: cardinal ? FontWeight.bold : FontWeight.w500,
           color: isNorth
               ? Colors.red.shade700
-              : (cardinal ? const Color(0xFF1A6B6B) : Colors.grey.shade400),
+              : (cardinal ? (isDark ? Colors.white : const Color(0xFF1A6B6B)) : Colors.grey.shade400),
         ),
       ),
     );

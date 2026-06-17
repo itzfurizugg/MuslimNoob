@@ -69,7 +69,7 @@ class _PrayerScheduleScreenState extends State<PrayerScheduleScreen> {
     });
     try {
       final schedule = await _service.getScheduleByDate(
-        kotaId: widget.city.id,
+        city: widget.city,
         date: DateTime.now(),
       );
       setState(() {
@@ -139,7 +139,7 @@ class _PrayerScheduleScreenState extends State<PrayerScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F0E8),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       // Tombol floating untuk Ubah Kota, bergaya liquid glass
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 90), // Biar gak ketutup navbar
@@ -159,8 +159,8 @@ class _PrayerScheduleScreenState extends State<PrayerScheduleScreen> {
                   }),
               backgroundColor: Colors.white.withOpacity(0.5),
               elevation: 0,
-              icon: const Icon(Icons.location_city, color: Color(0xFF1A6B6B)),
-              label: const Text(
+              icon: Icon(Icons.location_city, color: Color(0xFF1A6B6B)),
+              label: Text(
                 'Ubah Kota',
                 style: TextStyle(
                   color: Color(0xFF1A6B6B),
@@ -173,7 +173,7 @@ class _PrayerScheduleScreenState extends State<PrayerScheduleScreen> {
       ),
       body: SafeArea(
         child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? Center(child: CircularProgressIndicator())
             : _errorMessage != null
             ? _buildError()
             : _schedule == null
@@ -188,13 +188,13 @@ class _PrayerScheduleScreenState extends State<PrayerScheduleScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline, size: 64, color: Colors.red),
-          const SizedBox(height: 16),
+          Icon(Icons.error_outline, size: 64, color: Colors.red),
+          SizedBox(height: 16),
           Text(_errorMessage!, textAlign: TextAlign.center),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           ElevatedButton(
             onPressed: _loadTodaySchedule,
-            child: const Text('Coba Lagi'),
+            child: Text('Coba Lagi'),
           ),
         ],
       ),
@@ -206,20 +206,20 @@ class _PrayerScheduleScreenState extends State<PrayerScheduleScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.calendar_today, size: 64, color: Colors.grey),
-          const SizedBox(height: 16),
-          const Text(
+          Icon(Icons.calendar_today, size: 64, color: Colors.grey),
+          SizedBox(height: 16),
+          Text(
             'Data jadwal sholat belum tersedia\nuntuk hari ini.',
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.grey),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           TextButton(
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const CityPickerScreen()),
             ),
-            child: const Text('Ganti Kota'),
+            child: Text('Ganti Kota'),
           ),
         ],
       ),
@@ -256,15 +256,15 @@ class _PrayerScheduleScreenState extends State<PrayerScheduleScreen> {
               'Assalamu\'alaikum,',
               style: TextStyle(color: Colors.grey[600], fontSize: 16),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4),
             Text(
               _fullName ?? 'Saudaraku',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.w700,
-                color: const Color(0xFF0D4A4A),
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
 
             // Swipeable Clock / Calendar Card
             SizedBox(
@@ -275,7 +275,7 @@ class _PrayerScheduleScreenState extends State<PrayerScheduleScreen> {
                 children: [_buildClockCard(), _buildHijriCard()],
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Center(
               child: SmoothPageIndicator(
                 controller: _pageController,
@@ -289,15 +289,15 @@ class _PrayerScheduleScreenState extends State<PrayerScheduleScreen> {
               ),
             ),
 
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             Text(
               'Waktu Sholat Hari Ini',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF0D4A4A),
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
 
             ...prayers.map(
               (p) => _buildPrayerCard(
@@ -343,12 +343,12 @@ class _PrayerScheduleScreenState extends State<PrayerScheduleScreen> {
         children: [
           Row(
             children: [
-              const Icon(Icons.location_on, color: Colors.white70, size: 20),
-              const SizedBox(width: 8),
+              Icon(Icons.location_on, color: Colors.white70, size: 20),
+              SizedBox(width: 8),
               Expanded(
                 child: Text(
                   '${widget.city.name}, ${widget.city.province}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -366,14 +366,14 @@ class _PrayerScheduleScreenState extends State<PrayerScheduleScreen> {
             children: [
               Text(
                 '$hh:$mm',
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: 56,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -1,
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Text(
                 ss,
                 style: TextStyle(
@@ -423,18 +423,18 @@ class _PrayerScheduleScreenState extends State<PrayerScheduleScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.dark_mode_rounded, color: Colors.white, size: 32),
+          Icon(Icons.dark_mode_rounded, color: Colors.white, size: 32),
           const Spacer(),
           Text(
             '${today.hDay} ${today.longMonthName}',
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 36,
               fontWeight: FontWeight.bold,
               height: 1.1,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
             '${today.hYear} Hijriyah',
             style: TextStyle(
@@ -452,13 +452,15 @@ class _PrayerScheduleScreenState extends State<PrayerScheduleScreen> {
     required String time,
     required IconData icon,
   }) {
+    final theme = Theme.of(context);
     final isSubuhOrIsya = name == 'Subuh' || name == 'Isya';
+    final primaryColor = theme.colorScheme.primary;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -474,30 +476,34 @@ class _PrayerScheduleScreenState extends State<PrayerScheduleScreen> {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: isSubuhOrIsya
-                  ? const Color(0xFF1A6B6B).withOpacity(0.1)
-                  : const Color(0xFFFFF9C4),
+                  ? primaryColor.withOpacity(0.1)
+                  : (theme.brightness == Brightness.dark ? Colors.orange.withOpacity(0.1) : const Color(0xFFFFF9C4)),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(
               icon,
               color: isSubuhOrIsya
-                  ? const Color(0xFF1A6B6B)
-                  : const Color(0xFFF9A825),
+                  ? primaryColor
+                  : (theme.brightness == Brightness.dark ? Colors.orange : const Color(0xFFF9A825)),
               size: 24,
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           Text(
             name,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            style: TextStyle(
+              fontSize: 16, 
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurface,
+            ),
           ),
           const Spacer(),
           Text(
             time.substring(0, 5),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1A6B6B),
+              color: theme.brightness == Brightness.dark ? Colors.white : primaryColor,
             ),
           ),
         ],

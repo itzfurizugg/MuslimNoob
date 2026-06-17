@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'register.dart';
-import '../home.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -96,7 +95,7 @@ class _LoginPageState extends State<LoginPage>
     final isKeyboardOpen = keyboardHeight > 0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F0E8),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -113,14 +112,14 @@ class _LoginPageState extends State<LoginPage>
               'assets/images/login_images.png',
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) => Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [Color(0xFF1A6B6B), Color(0xFF0D4A4A)],
                   ),
                 ),
-                child: const Center(
+                child: Center(
                   child: Icon(
                     Icons.image_outlined,
                     size: 80,
@@ -145,7 +144,7 @@ class _LoginPageState extends State<LoginPage>
               child: SlideTransition(
                 position: _slideAnim,
                 child: Container(
-                  decoration: const BoxDecoration(color: Color(0xFFF5F0E8)),
+                  decoration: BoxDecoration(color: Color(0xFFF5F0E8)),
                   child: SingleChildScrollView(
                     padding: EdgeInsets.fromLTRB(
                       24,
@@ -159,7 +158,7 @@ class _LoginPageState extends State<LoginPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Tagline
-                          const Text(
+                          Text(
                             'MuslimNoob',
                             style: TextStyle(
                               fontSize: 18,
@@ -167,15 +166,15 @@ class _LoginPageState extends State<LoginPage>
                               fontWeight: FontWeight.w400,
                             ),
                           ),
-                          const Text(
+                          Text(
                             'Mulailah Bersama Kami',
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF0D4A4A),
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20),
 
                           // Email Field
                           _buildTextField(
@@ -184,14 +183,16 @@ class _LoginPageState extends State<LoginPage>
                             icon: Icons.email_outlined,
                             keyboardType: TextInputType.emailAddress,
                             validator: (val) {
-                              if (val == null || val.isEmpty)
+                              if (val == null || val.isEmpty) {
                                 return 'Email tidak boleh kosong';
-                              if (!val.contains('@'))
+                              }
+                              if (!val.contains('@')) {
                                 return 'Format email tidak valid';
+                              }
                               return null;
                             },
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12),
 
                           // Password Field
                           _buildTextField(
@@ -212,14 +213,16 @@ class _LoginPageState extends State<LoginPage>
                               ),
                             ),
                             validator: (val) {
-                              if (val == null || val.isEmpty)
+                              if (val == null || val.isEmpty) {
                                 return 'Password tidak boleh kosong';
-                              if (val.length < 6)
+                              }
+                              if (val.length < 6) {
                                 return 'Password minimal 6 karakter';
+                              }
                               return null;
                             },
                           ),
-                          const SizedBox(height: 40), // ← jarak lebih jauh
+                          SizedBox(height: 40), // ← jarak lebih jauh
                           // Login Button
                           SizedBox(
                             width: double.infinity,
@@ -235,7 +238,7 @@ class _LoginPageState extends State<LoginPage>
                                 elevation: 0,
                               ),
                               child: _isLoading
-                                  ? const SizedBox(
+                                  ? SizedBox(
                                       width: 22,
                                       height: 22,
                                       child: CircularProgressIndicator(
@@ -243,7 +246,7 @@ class _LoginPageState extends State<LoginPage>
                                         strokeWidth: 2,
                                       ),
                                     )
-                                  : const Text(
+                                  : Text(
                                       'Login',
                                       style: TextStyle(
                                         fontSize: 16,
@@ -253,7 +256,30 @@ class _LoginPageState extends State<LoginPage>
                                     ),
                             ),
                           ),
-                          const SizedBox(height: 24), // ← jarak lebih jauh
+                          SizedBox(height: 12),
+                          // Guest Login Button
+                          SizedBox(
+                            width: double.infinity,
+                            height: 52,
+                            child: OutlinedButton(
+                              onPressed: _isLoading ? null : () => Navigator.pushReplacementNamed(context, '/home'),
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(color: const Color(0xFF1A6B6B)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: Text(
+                                'Masuk Tanpa Login',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF1A6B6B),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 24), // ← jarak lebih jauh
                           // Daftar Link
                           Center(
                             child: GestureDetector(
@@ -285,7 +311,7 @@ class _LoginPageState extends State<LoginPage>
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16),
                         ],
                       ),
                     ),
@@ -313,7 +339,7 @@ class _LoginPageState extends State<LoginPage>
       keyboardType: keyboardType,
       obscureText: obscureText,
       enabled: !_isLoading,
-      style: const TextStyle(color: Color(0xFF0D4A4A), fontSize: 14),
+      style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 14),
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: TextStyle(color: Colors.grey[500], fontSize: 14),
